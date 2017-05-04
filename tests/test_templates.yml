@@ -1,0 +1,20 @@
+---
+- name: "test template files"
+  hosts: localhost
+  vars:
+    jenkins_users:
+      - name: "admin"
+        email: "admin@ekzemple.com"
+        password: "admin"
+        full_name: "Test Admin"
+        public_key: |
+          ssh-rsa AAAAB3NzaC1yc2EAAAADAQvvvvvvvvvvvvvv6VdY8dFu5f7zyKmHYCe5dP9dGGUlX9AoTKw5X9D+N34iLuO9xAkfMFATS8wVR9kff6KlizZC+4fmUh2bBkGutJ6SLv+icYMpKC2nq1+QY9iIf1osycoRYX08lR4uFPPBdud14X4iHsXElI5PvsDpsAhkC2QsLIyEChZkXK2IYtEHSmSD2C9hO3O7kAqYP4RuEZbqgjPL0fespF8ME1CM/QJjNx1LgJALKtVb6UTWxFdIjUi3UzQ7nBHTzMGa5Brwxi1WZN6IX3Je1V+dxCKx1+4Z5+47o407Z9bwvvvvvvvvvvvvvvlPAaLpsDBu204HAtsMrhd0hhjjuyzbIc8A9329pl7R28jWqKqypMEatzP7gql13iHlAjNLX4zOczbNZi/59b1fH9XuwdS1VFfOUmZ16QTTmhrM1FAJPsqMcmjn29hBpEolt9RU83RjUcNd7HZAwbldIFOk3yPJsa7VfLHwqFqtDgta5zcbBeWL5VufkL0GKW5cnV5R+r1+Q1YFI3Y2oe/WLTUUq6KW3TdSAbNhFz1MlCdUvvvvvvvvvvvvvvxAn0ipbtfVYelB9/Ujq8uY5Lyyl9unVC/4/m9aIUskrLsAMWSq1VhLmDLx1kP2QeHuP7ukwAYY2xDX91ESf2SvrN9J0ifaIqjzQyO/lXq5/QJZQxdoKMk0DQ== admin@ekzemple.com
+    jenkins_cred_strings:
+      - id: "github_apikey"
+        secret: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa05647509aa"
+        description: "Botuser API Key"
+  tasks:
+    - name: "template out users_and_creds"
+      template:
+        src: "../templates/users_and_creds.groovy.j2"
+        dest: "/tmp/users_and_creds.groovy.j2"

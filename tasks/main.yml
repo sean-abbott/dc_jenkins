@@ -1,0 +1,65 @@
+---
+- name: "add ansible_user to docker users"
+  become: yes
+  user:
+    name: "{{ ansible_user_id }}"
+    groups: "docker"
+    append: yes
+
+- name: "pull jenkins lts"
+  become: yes
+  docker_image:
+    name: "jenkinsci/jenkins:lts"
+
+
+- name: "ensure jenkins configuration directories"
+  become: yes
+  file:
+    name: "{{ item }}"
+    owner: 1000
+    group: 1000
+    state: "directory"
+  with_items:
+    - "/etc/jenkins/ref"
+    - "/etc/jenkins/config"
+
+- name: "template in configurations"
+  become: yes
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: 1000
+    group: 1000
+  with_items:
+    - src: "github-plugin-configuration.xml.j2"
+      dest: "/etc/jenkins/config/github-plugin-configuration.xml"
+    - src: "users_and_creds.groovy.j2"
+      dest: "/etc/jenkins/ref/users_and_creds.groovy"
+
+- name: "copy in baseline groovy"
+  become: yes
+  copy:
+    src: "tcp-slave-agent-port.groovy"
+    dest: "/etc/jenkins/ref/tcp-slave-agent-port.groovy"
+    owner: 1000
+    group: 1000
+
+- name: "get compose suite"
+  become: yes
+  git:
+    accept_hostkey: yes
+    depth: 1
+    dest: "/opt/docker_jenkins_suite"
+    repo: "https://github.com/sean-abbott/docker_jenkins_suite.git"
+
+- name: "template in environment"
+  become: yes
+  template:
+    src: "docker_jenkins_suite_.env.j2"
+    dest: "/opt/docker_jenkins_suite/.env"
+
+- name: "start jenkins"
+  become: yes
+  docker_service:
+    project_src: "/opt/docker_jenkins_suite"
+    state: "present"
