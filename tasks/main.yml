@@ -23,7 +23,7 @@
     - "/etc/jenkins/ref"
     - "/etc/jenkins/config"
 
-- name: "template in configurations"
+- name: "template in groovy scripts"
   become: yes
   template:
     src: "{{ item.src }}"
@@ -31,6 +31,8 @@
     owner: 1000
     group: 1000
   with_items:
+    - src: "config.xml.j2"
+      dest: "/etc/jenkins/config/config.xml"
     - src: "github-plugin-configuration.xml.j2"
       dest: "/etc/jenkins/config/github-plugin-configuration.xml"
     - src: "users_and_creds.groovy.j2"
@@ -57,6 +59,29 @@
   template:
     src: "docker_jenkins_suite_.env.j2"
     dest: "/opt/docker_jenkins_suite/.env"
+
+- name: "template in xml configs"
+  become: yes
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: 1000
+    group: 1000
+  with_items:
+    - src: "config.xml.j2"
+      dest: "/opt/docker_jenkins_suite/jenkins/config/config.xml"
+    - src: "github-plugin-configuration.xml.j2"
+      dest: "/opt/docker_jenkins_suite/jenkins/config/github-plugin-configuration.xml"
+    - src: "jenkins.model.JenkinsLocationConfiguration.xml.j2"
+      dest: "/opt/docker_jenkins_suite/jenkins/config/jenkins.model.JenkinsLocationConfiguration.xml"
+
+- name: "copy in plugins.txt"
+  become: yes
+  copy:
+    src: plugins.txt
+    dest: "/opt/docker_jenkins_suite/jenkins/config/plugins.txt"
+    owner: 1000
+    group: 1000
 
 - name: "start jenkins"
   become: yes
