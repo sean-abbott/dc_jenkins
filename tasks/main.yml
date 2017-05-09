@@ -38,13 +38,18 @@
     - src: "users_and_creds.groovy.j2"
       dest: "/etc/jenkins/ref/users_and_creds.groovy"
 
-- name: "copy in baseline groovy"
+- name: "copy in simple groovy scripts"
   become: yes
   copy:
-    src: "tcp-slave-agent-port.groovy"
-    dest: "/etc/jenkins/ref/tcp-slave-agent-port.groovy"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     owner: 1000
     group: 1000
+  with_items:
+    - src: "tcp-slave-agent-port.groovy"
+      dest: "/etc/jenkins/ref/tcp-slave-agent-port.groovy"
+    - src: "enable_slave_master_security.groovy"
+      dest: "/etc/jenkins/ref/enable_slave_master_security.groovy"
 
 - name: "get compose suite"
   become: yes
