@@ -79,6 +79,25 @@
       dest: "/opt/docker_jenkins_suite/jenkins/config/github-plugin-configuration.xml"
     - src: "jenkins.model.JenkinsLocationConfiguration.xml.j2"
       dest: "/opt/docker_jenkins_suite/jenkins/config/jenkins.model.JenkinsLocationConfiguration.xml"
+    - src: "hudson.plugins.git.GitSCM.xml.j2"
+      dest: "/opt/docker_jenkins_suite/jenkins/config/hudson.plugins.git.GitSCM.xml"
+
+- name: "set id_rsa contents"
+  become: yes
+  copy:
+    content: "{{ jenkins_user_ssh_credential.private }}"
+    dest: "/opt/docker_jenkins_suite/jenkins/config/id_rsa"
+    owner: 1000
+    group: 1000
+    mode: 0600
+
+- name: "set id_rsa.pub contents"
+  become: yes
+  copy:
+    content: "{{ jenkins_user_ssh_credential.public }}"
+    dest: "/opt/docker_jenkins_suite/jenkins/config/id_rsa.pub"
+    owner: 1000
+    group: 1000
 
 - name: "copy in plugins.txt"
   become: yes

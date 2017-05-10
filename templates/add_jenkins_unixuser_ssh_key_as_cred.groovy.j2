@@ -1,0 +1,29 @@
+import jenkins.model.*
+import com.cloudbees.plugins.credentials.*
+import com.cloudbees.plugins.credentials.common.*
+import com.cloudbees.plugins.credentials.domains.*
+import com.cloudbees.plugins.credentials.impl.*
+import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
+import org.jenkinsci.plugins.plaincredentials.*
+import org.jenkinsci.plugins.plaincredentials.impl.*
+import hudson.util.Secret
+import hudson.plugins.sshslaves.*
+import org.apache.commons.fileupload.* 
+import org.apache.commons.fileupload.disk.*
+import java.nio.file.Files
+// some of these imports are not necessary here, but I got lazy
+
+domain = Domain.global()
+store = Jenkins.instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
+
+// this will expect the private key to exist for the jenkins user
+privateKey = new BasicSSHUserPrivateKey(
+  CredentialsScope.GLOBAL,
+  "{{ jenkins_user_ssh_credential.id }}", // id
+  "{{ jenkins_user_ssh_credential.username }}", // username
+  new BasicSSHUserPrivateKey.UsersPrivateKeySource(), // PrivateKeySource
+  "{{ jenkins_user_ssh_credential.password | default("") }}", // passphrase
+  "{{ jenkins_user_ssh_credential.id }}" //description
+)
+
+store.addCredentials(domain, privateKey)
