@@ -112,3 +112,9 @@
   docker_service:
     project_src: "/opt/docker_jenkins_suite"
     state: "present"
+  register: jenkins_suite
+
+- name: "debug jenkins_suite"
+  debug:
+    var: jenkins_suite
+    verbosity: 1
